@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:alpine as builder
 
 WORKDIR /frontend
 
@@ -6,9 +6,12 @@ COPY ./package.json .
 
 RUN npm install
 
+COPY . .
 
-#COPY . .
+RUN npm run build
 
-CMD [ "npm","run",  "start" ]
+FROM nginx
+
+COPY --from=builder /frontend/build /usr/share/nginx/html
 
 
